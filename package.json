@@ -7,10 +7,16 @@
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
-    "hono": "^4.11.5"
+    "@ai-sdk/anthropic": "^3.0.64",
+    "@anthropic-ai/sdk": "^0.81.0",
+    "ai": "^6.0.142",
+    "hono": "^4.11.5",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260124.0",
+    "@types/node": "^25.5.0",
+    "typescript": "^6.0.2",
     "wrangler": "^4.4.0"
   }
 }

@@ -60,11 +60,13 @@ documents.post("/", async (c) => {
     // Handle multipart form data
     if (contentType.includes("multipart/form-data")) {
       const formData = await c.req.formData();
-      const file = formData.get("file");
+      const rawFile = formData.get("file");
 
-      if (!file || !(file instanceof File)) {
+      if (!rawFile || typeof rawFile === 'string') {
         return c.json({ error: "No file provided" }, 400);
       }
+
+      const file = rawFile as unknown as { name: string; type: string; size: number; arrayBuffer(): Promise<ArrayBuffer> };
 
       // Validate file type
       if (!SUPPORTED_CONTENT_TYPES[file.type]) {

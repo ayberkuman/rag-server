@@ -1,39 +1,38 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "rag-server",
-  "main": "src/index.ts",
-  "compatibility_date": "2026-01-24",
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  "r2_buckets": [
-    {
-      "binding": "DOCUMENTS_BUCKET",
-      "bucket_name": "rag-test",
-      "preview_bucket_name": "rag-test"
-    }
-  ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
-  "ai": {
-    "binding": "AI"
-  },
-  "vars": {
-    "AI_SEARCH_INSTANCE_ID": "new-rag"
-  }
-  // "observability": {
-  //   "enabled": true,
-  //   "head_sampling_rate": 1
-  // }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "rag-server",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-01-24",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"kv_namespaces": [
+		{
+			"binding": "CONVERSATIONS_KV",
+			"id": "605475a15492427d8884ab51c3693104",
+			"remote": true
+		},
+		{
+			"binding": "LEADS_KV",
+			"id": "a403c4b396994d57af455e37c5d6f31b",
+			"remote": true
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "DOCUMENTS_BUCKET",
+			"bucket_name": "rag-test",
+			"preview_bucket_name": "rag-test"
+		}
+	],
+	"ai": {
+		"binding": "AI"
+	},
+	"vars": {
+		"AI_SEARCH_INSTANCE_ID": "new-rag"
+	}
+	// "observability": {
+	//   "enabled": true,
+	//   "head_sampling_rate": 1
+	// }
 }

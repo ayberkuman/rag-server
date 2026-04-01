@@ -1,4 +1,4 @@
-import type { Env } from '../types/env';
+import type { Env, AiSearchDocument } from '../types/env';
 
 export interface CustomerSupportResponse {
   answer: string;
@@ -12,6 +12,11 @@ export interface CustomerSupportStreamResponse {
   error?: string;
 }
 
+export interface KnowledgeBaseResult {
+  documents: AiSearchDocument[];
+  formattedText: string;
+}
+
 const DEFAULT_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
 const DEFAULT_SYSTEM_PROMPT = `You are a helpful customer support assistant.
 Your role is to:
@@ -19,6 +24,56 @@ Your role is to:
 - If you don't know the answer, say so honestly
 - Keep responses concise but complete
 - Be professional and empathetic`;
+
+/**
+ * Search-only mode: retrieval without LLM generation.
+ * Returns raw document chunks for the Claude agent to reason over.
+ */
+export async function searchKnowledgeBase(
+  ai: Env['Bindings']['AI'],
+  instanceId: string,
+  query: string,
+): Promise<KnowledgeBaseResult> {
+  try {
+    const result = await ai.autorag(instanceId).search({
+      query,
+      max_num_results: 5,
+    });
+
+    const documents = result.data;
+
+    // Format results with metadata from filenames for Claude
+    const formattedText = documents
+      .map((doc, i) => {
+        const metadata = extractMetadataFromFilename(doc.filename);
+        const metaStr = Object.entries(metadata)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(' | ');
+
+        const content = doc.content.map((c) => c.text).join('\n');
+        return `[Result ${i + 1} | ${metaStr} | score: ${doc.score.toFixed(2)}]\n${content}`;
+      })
+      .join('\n\n');
+
+    return { documents, formattedText };
+  } catch (error) {
+    console.error('Knowledge base search error:', error);
+    return { documents: [], formattedText: 'No results found.' };
+  }
+}
+
+function extractMetadataFromFilename(filename: string): Record<string, string> {
+  const meta: Record<string, string> = { filename };
+
+  // Extract type from path prefix (conversations/ or faq/)
+  if (filename.startsWith('conversations/')) {
+    meta.type = 'conversation';
+  } else if (filename.startsWith('faq/')) {
+    meta.type = 'faq';
+  }
+
+  return meta;
+}
 
 export async function queryCustomerSupport(
   ai: Env['Bindings']['AI'],

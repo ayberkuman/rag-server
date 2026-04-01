@@ -6,10 +6,7 @@
     "strict": true,
     "skipLibCheck": true,
     "lib": ["ESNext"],
-    "types": ["@cloudflare/workers-types"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "types": ["node"]
   },
-  "include": ["src"],
-  "exclude": ["scripts"]
+  "include": ["preprocess-chats"]
 }
